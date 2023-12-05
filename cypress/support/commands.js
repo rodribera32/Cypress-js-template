@@ -9,8 +9,13 @@
 // ***********************************************
 //
 //
+
+import LoginPage from "./pageObjects/login.page";
+
 // -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
+Cypress.Commands.add('login', (email, password) => { 
+    LoginPage.login(email, password);
+ })
 //
 //
 // -- This is a child command --
