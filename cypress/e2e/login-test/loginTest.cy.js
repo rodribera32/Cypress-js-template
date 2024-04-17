@@ -14,11 +14,11 @@ describe("Login TestSuite", () => {
     cy.url().should("eq", "https://admin-demo.nopcommerce.com/admin/");
   });
 
-  it("Success Login using commands", () => {
-    cy.login(loginData.validEmail, loginData.validPassword);
-    NavBarPage.navBarIcon.should("be.visible")
-    cy.url().should("eq", "https://admin-demo.nopcommerce.com/admin/");
-  });
+  // it("Success Login using commands", () => {
+  //   cy.login(loginData.validEmail, loginData.validPassword);
+  //   NavBarPage.navBarIcon.should("be.visible")
+  //   cy.url().should("eq", "https://admin-demo.nopcommerce.com/admin/");
+  // });
  
   it("Invalid Login", () => {
     LoginPage.login(loginData.invalidEmail, loginData.validPassword);

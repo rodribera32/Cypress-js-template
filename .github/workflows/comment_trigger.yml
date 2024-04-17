@@ -1,4 +1,3 @@
-
 name: Run Cypress tests on comment trigger
 
 on:
@@ -10,12 +9,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check if the comment contains trigger phrase
+    - name: Check out repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '14'
+
+    - name: Navigate to project directory
+      run: ls
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Check if the comment contains trigger phrase and run Cypress tests
       run: |
         COMMENT_BODY=$(jq -r .comment.body "$GITHUB_EVENT_PATH")
         if [[ "$COMMENT_BODY" == *":run_cypress_test:"* ]]; then
-          npm install
-          npx cypress run --headless --record
+          npx cypress run --headless
         else
           echo "No trigger phrase found in the comment."
         fi

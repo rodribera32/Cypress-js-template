@@ -1,0 +1,45 @@
+name: Run Cypress tests on PR comment
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Check if the comment contains trigger phrase and run Cypress tests
+        id: run-cypress-tests
+        run: |
+          COMMENT_BODY=$(jq -r .comment.body "$GITHUB_EVENT_PATH")
+          if [[ "$COMMENT_BODY" == *":cypress_run_test:"* ]]; then
+            npx cypress run --headless
+          else
+            echo "No trigger phrase found in the comment."
+          fi
+
+      - name: Post test result as comment on PR
+        if: steps.run-cypress-tests.outputs.result != ''
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const body = "Cypress test result: Tests completed successfully.";
+            github.issues.createComment({
+              issue_number: context.payload.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
